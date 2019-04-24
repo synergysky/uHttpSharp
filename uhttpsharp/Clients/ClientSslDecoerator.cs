@@ -13,9 +13,11 @@ namespace uhttpsharp.Clients
         private readonly IClient _child;
         private readonly X509Certificate _certificate;
         private readonly SslStream _sslStream;
+        private readonly SslProtocols _protocol;
 
-        public ClientSslDecorator(IClient child, X509Certificate certificate)
+        public ClientSslDecorator(IClient child, X509Certificate certificate, SslProtocols protocol)
         {
+            _protocol = protocol;
             _child = child;
             _certificate = certificate;
             _sslStream = new SslStream(_child.Stream);
@@ -24,7 +26,7 @@ namespace uhttpsharp.Clients
         public async Task AuthenticateAsServer()
         {
             Task timeout = Task.Delay(TimeSpan.FromSeconds(10));
-            if (timeout == await Task.WhenAny(_sslStream.AuthenticateAsServerAsync(_certificate, false, SslProtocols.Tls, true), timeout).ConfigureAwait(false))
+            if (timeout == await Task.WhenAny(_sslStream.AuthenticateAsServerAsync(_certificate, false, _protocol, true), timeout).ConfigureAwait(false))
             {
                 throw new TimeoutException("SSL Authentication Timeout");
             }
