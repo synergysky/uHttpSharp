@@ -860,9 +860,10 @@ namespace uhttpsharp.Logging.LogProviders
         private static Func<string, object> GetGetLoggerMethodCall()
         {
             Type logManagerType = GetLogManagerType();
-            MethodInfo method = logManagerType.GetMethodPortable("GetLogger", new[] { typeof(string) });
+            MethodInfo method = logManagerType.GetMethodPortable("GetLogger", new[] { typeof(Assembly), typeof(string) });
+            ConstantExpression repositoryParam = Expression.Constant(Assembly.GetEntryAssembly(), typeof(Assembly));
             ParameterExpression nameParam = Expression.Parameter(typeof(string), "name");
-            MethodCallExpression methodCall = Expression.Call(null, method, nameParam);
+            MethodCallExpression methodCall = Expression.Call(null, method, repositoryParam, nameParam);
             return Expression.Lambda<Func<string, object>>(methodCall, nameParam).Compile();
         }
 
