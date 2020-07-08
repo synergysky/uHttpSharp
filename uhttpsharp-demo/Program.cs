@@ -22,6 +22,7 @@ using System.Dynamic;
 using System.Globalization;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Threading.Tasks;
 using log4net.Config;
 using uhttpsharp;
@@ -39,7 +40,7 @@ namespace uhttpsharpdemo
     {
         private static void Main()
         {
-            XmlConfigurator.Configure();
+            XmlConfigurator.Configure(log4net.LogManager.GetRepository(Assembly.GetEntryAssembly()));
 
             //var serverCertificate = X509Certificate.CreateFromCertFile(@"TempCert.cer");
 
